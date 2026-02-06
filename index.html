@@ -7,13 +7,13 @@
 <style>
 body {margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; display:flex;}
 
-/* SIDEBAR */
+/* Sidebar */
 .sidebar {width:230px; background:#0f172a; color:white; height:100vh; padding:20px;}
 .sidebar h2 {text-align:center; margin-bottom:30px;}
 .sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px; cursor:pointer;}
 .sidebar a:hover {background:#1e293b;}
 
-/* MAIN */
+/* Main */
 .main {flex:1; padding:25px; overflow-y:auto;}
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
 h2 {margin-top:0;}
@@ -23,6 +23,9 @@ button:hover {background:#1d4ed8;}
 table {width:100%; border-collapse:collapse; margin-top:15px;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
 th {background:#e5e7eb;}
+
+/* Formularios ocultos inicialmente */
+.formulario {display:none; margin-top:15px;}
 </style>
 </head>
 <body>
@@ -36,8 +39,15 @@ th {background:#e5e7eb;}
 <div class="main">
   <!-- CRM Comercial -->
   <div id="crmComercial" class="seccion">
-    <!-- AGENTES -->
     <div class="card">
+      <h2>CRM Comercial</h2>
+      <button onclick="abrirFormulario('formAgencias')">Registrar Agencia</button>
+      <button onclick="abrirFormulario('formVendedores')">Registrar Vendedor</button>
+      <button onclick="abrirFormulario('formAcciones')">Registrar Acción Comercial</button>
+    </div>
+
+    <!-- Formulario Agencias -->
+    <div id="formAgencias" class="card formulario">
       <h2>Registrar Agencia</h2>
       <input type="text" id="agNombre" placeholder="Nombre">
       <input type="email" id="agMail" placeholder="Mail">
@@ -45,8 +55,8 @@ th {background:#e5e7eb;}
       <button onclick="guardarAgencia()">Guardar Agencia</button>
     </div>
 
-    <!-- VENDEDORES -->
-    <div class="card">
+    <!-- Formulario Vendedores -->
+    <div id="formVendedores" class="card formulario">
       <h2>Registrar Vendedor</h2>
       <input type="text" id="veNombre" placeholder="Nombre">
       <input type="email" id="veMail" placeholder="Mail">
@@ -57,8 +67,8 @@ th {background:#e5e7eb;}
       <button onclick="guardarVendedor()">Guardar Vendedor</button>
     </div>
 
-    <!-- ACCIONES -->
-    <div class="card">
+    <!-- Formulario Acciones -->
+    <div id="formAcciones" class="card formulario">
       <h2>Registrar Acción Comercial</h2>
       <input type="date" id="acFecha">
       <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
@@ -77,6 +87,7 @@ th {background:#e5e7eb;}
         <tbody id="tablaAcciones"></tbody>
       </table>
     </div>
+
   </div>
 
   <!-- Liberty Statistics -->
@@ -93,6 +104,11 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-
 
 function mostrarSeccion(id){
   document.querySelectorAll('.seccion').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+function abrirFormulario(id){
+  document.querySelectorAll('.formulario').forEach(f=>f.style.display='none');
   document.getElementById(id).style.display='block';
 }
 
