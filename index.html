@@ -6,14 +6,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
 body {margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; display:flex;}
-
-/* Sidebar */
 .sidebar {width:230px; background:#0f172a; color:white; height:100vh; padding:20px;}
 .sidebar h2 {text-align:center; margin-bottom:30px;}
 .sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px; cursor:pointer;}
 .sidebar a:hover {background:#1e293b;}
-
-/* Main */
 .main {flex:1; padding:25px; overflow-y:auto;}
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
 h2 {margin-top:0;}
@@ -23,13 +19,13 @@ button:hover {background:#1d4ed8;}
 table {width:100%; border-collapse:collapse; margin-top:15px;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
 th {background:#e5e7eb;}
-
-/* Botones registro */
 .botones-registro {display:flex; gap:10px; margin-bottom:15px;}
 .botones-registro button {flex:1; font-size:14px; padding:8px;}
 
-/* Formularios ocultos inicialmente */
-.formulario {display:none; margin-bottom:20px;}
+/* Modal */
+.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:100;}
+.modal-content {background:white; padding:25px; border-radius:12px; width:400px; max-width:90%; position:relative;}
+.modal-close {position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold; font-size:18px;}
 </style>
 </head>
 <body>
@@ -46,40 +42,13 @@ th {background:#e5e7eb;}
     <div class="card">
       <h2>CRM Comercial</h2>
       <div class="botones-registro">
-        <button onclick="abrirFormulario('formAgencias')">Agencia</button>
-        <button onclick="abrirFormulario('formVendedores')">Vendedor</button>
-        <button onclick="abrirFormulario('formAcciones')">Acción</button>
-      </div>
-
-      <!-- Formularios -->
-      <div id="formAgencias" class="formulario">
-        <input type="text" id="agNombre" placeholder="Nombre">
-        <input type="email" id="agMail" placeholder="Mail">
-        <input type="text" id="agTelefono" placeholder="Teléfono">
-        <button onclick="guardarAgencia()">Guardar Agencia</button>
-      </div>
-
-      <div id="formVendedores" class="formulario">
-        <input type="text" id="veNombre" placeholder="Nombre">
-        <input type="email" id="veMail" placeholder="Mail">
-        <select id="veEstado">
-          <option value="Activo">Activo</option>
-          <option value="Inactivo">Inactivo</option>
-        </select>
-        <button onclick="guardarVendedor()">Guardar Vendedor</button>
-      </div>
-
-      <div id="formAcciones" class="formulario">
-        <input type="date" id="acFecha">
-        <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
-        <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
-        <input type="text" id="acTipo" placeholder="Tipo de Acción">
-        <textarea id="acObs" placeholder="Observación"></textarea>
-        <button onclick="guardarAccion()">Guardar Acción</button>
+        <button onclick="abrirModal('modalAgencias')">Agencia</button>
+        <button onclick="abrirModal('modalVendedores')">Vendedor</button>
+        <button onclick="abrirModal('modalAcciones')">Acción</button>
       </div>
     </div>
 
-    <!-- Tabla de Acciones siempre visible -->
+    <!-- Tabla de Acciones -->
     <div class="card">
       <h2>Listado de Acciones Comerciales</h2>
       <table>
@@ -102,6 +71,45 @@ th {background:#e5e7eb;}
   </div>
 </div>
 
+<!-- Modales -->
+<div id="modalAgencias" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="cerrarModal('modalAgencias')">&times;</span>
+    <h2>Registrar Agencia</h2>
+    <input type="text" id="agNombre" placeholder="Nombre">
+    <input type="email" id="agMail" placeholder="Mail">
+    <input type="text" id="agTelefono" placeholder="Teléfono">
+    <button onclick="guardarAgencia()">Guardar Agencia</button>
+  </div>
+</div>
+
+<div id="modalVendedores" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="cerrarModal('modalVendedores')">&times;</span>
+    <h2>Registrar Vendedor</h2>
+    <input type="text" id="veNombre" placeholder="Nombre">
+    <input type="email" id="veMail" placeholder="Mail">
+    <select id="veEstado">
+      <option value="Activo">Activo</option>
+      <option value="Inactivo">Inactivo</option>
+    </select>
+    <button onclick="guardarVendedor()">Guardar Vendedor</button>
+  </div>
+</div>
+
+<div id="modalAcciones" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="cerrarModal('modalAcciones')">&times;</span>
+    <h2>Registrar Acción Comercial</h2>
+    <input type="date" id="acFecha">
+    <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
+    <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
+    <input type="text" id="acTipo" placeholder="Tipo de Acción">
+    <textarea id="acObs" placeholder="Observación"></textarea>
+    <button onclick="guardarAccion()">Guardar Acción</button>
+  </div>
+</div>
+
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-lWB8FjrzJUhvBlFGFwncfVC6COIROBl3dQyLxG7QFP9zKDDjVQ/exec";
 
@@ -110,10 +118,8 @@ function mostrarSeccion(id){
   document.getElementById(id).style.display='block';
 }
 
-function abrirFormulario(id){
-  document.querySelectorAll('.formulario').forEach(f=>f.style.display='none');
-  document.getElementById(id).style.display='block';
-}
+function abrirModal(id){document.getElementById(id).style.display='flex';}
+function cerrarModal(id){document.getElementById(id).style.display='none';}
 
 // Acciones locales
 let acciones=[];
@@ -125,7 +131,7 @@ function guardarAgencia(){
   const telefono=document.getElementById('agTelefono').value;
   if(!nombre||!mail) return alert("Complete todos los campos obligatorios");
   fetch(WEB_APP_URL,{method:"POST", body:JSON.stringify({tipo:"agencia", nombre, mail, telefono})})
-    .then(r=>r.json()).then(resp=>{alert("Agencia guardada!"); limpiarAgencia(); cargarAgencias();})
+    .then(r=>r.json()).then(resp=>{alert("Agencia guardada!"); cerrarModal('modalAgencias'); limpiarAgencia(); cargarAgencias();})
     .catch(e=>alert("Error: "+e));
 }
 function limpiarAgencia(){document.getElementById('agNombre').value=''; document.getElementById('agMail').value=''; document.getElementById('agTelefono').value='';}
@@ -137,7 +143,7 @@ function guardarVendedor(){
   const estado=document.getElementById('veEstado').value;
   if(!nombre||!mail) return alert("Complete todos los campos obligatorios");
   fetch(WEB_APP_URL,{method:"POST", body:JSON.stringify({tipo:"vendedor", nombre, mail, estado})})
-    .then(r=>r.json()).then(resp=>{alert("Vendedor guardado!"); limpiarVendedor(); cargarVendedores();})
+    .then(r=>r.json()).then(resp=>{alert("Vendedor guardado!"); cerrarModal('modalVendedores'); limpiarVendedor(); cargarVendedores();})
     .catch(e=>alert("Error: "+e));
 }
 function limpiarVendedor(){document.getElementById('veNombre').value=''; document.getElementById('veMail').value='';}
@@ -156,6 +162,7 @@ function guardarAccion(){
       alert("Acción guardada!");
       acciones.push({fecha, agencia, vendedor, tipoAccion:tipo, observacion:obs});
       mostrarAcciones();
+      cerrarModal('modalAcciones');
       limpiarAccion();
     }).catch(e=>alert("Error: "+e));
 }
@@ -205,11 +212,10 @@ function cargarAcciones(){
     .catch(e => console.error("Error cargando acciones:", e));
 }
 
-// Inicializar dropdowns y tabla al iniciar
+// Inicializar
 cargarAgencias();
 cargarVendedores();
 cargarAcciones();
 </script>
-
 </body>
 </html>
