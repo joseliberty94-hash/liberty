@@ -6,11 +6,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
 body {margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; display:flex;}
-/* Sidebar */
+
+/* SIDEBAR */
 .sidebar {width:230px; background:#0f172a; color:white; height:100vh; padding:20px;}
 .sidebar h2 {text-align:center; margin-bottom:30px;}
-.sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px;}
+.sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px; cursor:pointer;}
 .sidebar a:hover {background:#1e293b;}
+
+/* MAIN */
 .main {flex:1; padding:25px; overflow-y:auto;}
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
 h2 {margin-top:0;}
@@ -26,52 +29,62 @@ th {background:#e5e7eb;}
 
 <div class="sidebar">
   <h2>CRM Liberty</h2>
-  <a href="#" onclick="mostrarSeccion('agencias')">🏢 Agencias</a>
-  <a href="#" onclick="mostrarSeccion('vendedores')">👨‍💼 Vendedores</a>
-  <a href="#" onclick="mostrarSeccion('acciones')">📋 Acciones Comerciales</a>
+  <a onclick="mostrarSeccion('crmComercial')">📋 CRM Comercial</a>
+  <a onclick="mostrarSeccion('libertyStats')">📊 Liberty Statistics</a>
 </div>
 
 <div class="main">
-  <!-- Agencias -->
-  <div id="agencias" class="card seccion">
-    <h2>Registrar Agencia</h2>
-    <input type="text" id="agNombre" placeholder="Nombre">
-    <input type="email" id="agMail" placeholder="Mail">
-    <input type="text" id="agTelefono" placeholder="Teléfono">
-    <button onclick="guardarAgencia()">Guardar Agencia</button>
+  <!-- CRM Comercial -->
+  <div id="crmComercial" class="seccion">
+    <!-- AGENTES -->
+    <div class="card">
+      <h2>Registrar Agencia</h2>
+      <input type="text" id="agNombre" placeholder="Nombre">
+      <input type="email" id="agMail" placeholder="Mail">
+      <input type="text" id="agTelefono" placeholder="Teléfono">
+      <button onclick="guardarAgencia()">Guardar Agencia</button>
+    </div>
+
+    <!-- VENDEDORES -->
+    <div class="card">
+      <h2>Registrar Vendedor</h2>
+      <input type="text" id="veNombre" placeholder="Nombre">
+      <input type="email" id="veMail" placeholder="Mail">
+      <select id="veEstado">
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+      <button onclick="guardarVendedor()">Guardar Vendedor</button>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="card">
+      <h2>Registrar Acción Comercial</h2>
+      <input type="date" id="acFecha">
+      <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
+      <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
+      <input type="text" id="acTipo" placeholder="Tipo de Acción">
+      <textarea id="acObs" placeholder="Observación"></textarea>
+      <button onclick="guardarAccion()">Guardar Acción</button>
+
+      <h2>Listado de Acciones</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Agencia</th><th>Vendedor</th><th>Tipo</th><th>Observación</th>
+          </tr>
+        </thead>
+        <tbody id="tablaAcciones"></tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Vendedores -->
-  <div id="vendedores" class="card seccion" style="display:none;">
-    <h2>Registrar Vendedor</h2>
-    <input type="text" id="veNombre" placeholder="Nombre">
-    <input type="email" id="veMail" placeholder="Mail">
-    <select id="veEstado">
-      <option value="Activo">Activo</option>
-      <option value="Inactivo">Inactivo</option>
-    </select>
-    <button onclick="guardarVendedor()">Guardar Vendedor</button>
-  </div>
-
-  <!-- Acciones -->
-  <div id="acciones" class="card seccion" style="display:none;">
-    <h2>Registrar Acción Comercial</h2>
-    <input type="date" id="acFecha">
-    <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
-    <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
-    <input type="text" id="acTipo" placeholder="Tipo de Acción">
-    <textarea id="acObs" placeholder="Observación"></textarea>
-    <button onclick="guardarAccion()">Guardar Acción</button>
-
-    <h2>Listado de Acciones</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Fecha</th><th>Agencia</th><th>Vendedor</th><th>Tipo</th><th>Observación</th>
-        </tr>
-      </thead>
-      <tbody id="tablaAcciones"></tbody>
-    </table>
+  <!-- Liberty Statistics -->
+  <div id="libertyStats" class="seccion" style="display:none;">
+    <div class="card">
+      <h2>Liberty Statistics</h2>
+      <p>Próximamente: panel de estadísticas y KPIs</p>
+    </div>
   </div>
 </div>
 
@@ -83,110 +96,75 @@ function mostrarSeccion(id){
   document.getElementById(id).style.display='block';
 }
 
-// Guardar Agencia
+// Acciones locales
+let acciones=[];
+
+// CRUD Agencias y Vendedores
 function guardarAgencia(){
   const nombre=document.getElementById('agNombre').value;
   const mail=document.getElementById('agMail').value;
-  const tel=document.getElementById('agTelefono').value;
-  if(!nombre || !mail) return alert("Complete todos los campos obligatorios");
-  fetch(WEB_APP_URL, {
-    method:"POST",
-    body: JSON.stringify({tipo:"agencia", nombre, mail, telefono:tel})
-  }).then(r=>r.json()).then(resp=>{
-    alert("Agencia guardada!");
-    document.getElementById('agNombre').value="";
-    document.getElementById('agMail').value="";
-    document.getElementById('agTelefono').value="";
-    cargarAgencias();
-  }).catch(e=>alert("Error: "+e));
+  const telefono=document.getElementById('agTelefono').value;
+  if(!nombre||!mail) return alert("Complete todos los campos obligatorios");
+  fetch(WEB_APP_URL,{method:"POST", body:JSON.stringify({tipo:"agencia", nombre, mail, telefono})})
+    .then(r=>r.json()).then(resp=>{alert("Agencia guardada!"); limpiarAgencia(); cargarAgencias();})
+    .catch(e=>alert("Error: "+e));
 }
+function limpiarAgencia(){document.getElementById('agNombre').value=''; document.getElementById('agMail').value=''; document.getElementById('agTelefono').value='';}
 
-// Guardar Vendedor
 function guardarVendedor(){
   const nombre=document.getElementById('veNombre').value;
   const mail=document.getElementById('veMail').value;
   const estado=document.getElementById('veEstado').value;
-  if(!nombre || !mail) return alert("Complete todos los campos obligatorios");
-  fetch(WEB_APP_URL, {
-    method:"POST",
-    body: JSON.stringify({tipo:"vendedor", nombre, mail, estado})
-  }).then(r=>r.json()).then(resp=>{
-    alert("Vendedor guardado!");
-    document.getElementById('veNombre').value="";
-    document.getElementById('veMail').value="";
-    cargarVendedores();
-  }).catch(e=>alert("Error: "+e));
+  if(!nombre||!mail) return alert("Complete todos los campos obligatorios");
+  fetch(WEB_APP_URL,{method:"POST", body:JSON.stringify({tipo:"vendedor", nombre, mail, estado})})
+    .then(r=>r.json()).then(resp=>{alert("Vendedor guardado!"); limpiarVendedor(); cargarVendedores();})
+    .catch(e=>alert("Error: "+e));
 }
+function limpiarVendedor(){document.getElementById('veNombre').value=''; document.getElementById('veMail').value='';}
 
-// Guardar Acción Comercial
-let acciones=[];
 function guardarAccion(){
   const fecha=document.getElementById('acFecha').value;
   const agencia=document.getElementById('acAgencia').value;
   const vendedor=document.getElementById('acVendedor').value;
   const tipo=document.getElementById('acTipo').value;
   const obs=document.getElementById('acObs').value;
-  if(!fecha || !agencia || !vendedor || !tipo) return alert("Complete todos los campos obligatorios");
+  if(!fecha||!agencia||!vendedor||!tipo) return alert("Complete todos los campos obligatorios");
   const accion={tipo:"accion", fecha, agencia, vendedor, tipoAccion:tipo, observacion:obs};
-  fetch(WEB_APP_URL,{
-    method:"POST",
-    body:JSON.stringify(accion)
-  }).then(r=>r.json()).then(resp=>{
-    alert("Acción guardada!");
-    acciones.push({fecha, agencia, vendedor, tipoAccion:tipo, observacion:obs});
-    mostrarAcciones();
-    document.getElementById('acFecha').value="";
-    document.getElementById('acTipo').value="";
-    document.getElementById('acObs').value="";
-  }).catch(e=>alert("Error: "+e));
+  fetch(WEB_APP_URL,{method:"POST", body:JSON.stringify(accion)})
+    .then(r=>r.json()).then(resp=>{
+      alert("Acción guardada!");
+      acciones.push({fecha, agencia, vendedor, tipoAccion:tipo, observacion:obs});
+      mostrarAcciones();
+      limpiarAccion();
+    }).catch(e=>alert("Error: "+e));
 }
+function limpiarAccion(){document.getElementById('acFecha').value=''; document.getElementById('acTipo').value=''; document.getElementById('acObs').value='';}
 
 // Mostrar tabla
 function mostrarAcciones(){
-  const tbody=document.getElementById('tablaAcciones');
-  tbody.innerHTML="";
+  const tbody=document.getElementById('tablaAcciones'); tbody.innerHTML='';
   acciones.forEach(a=>{
-    tbody.innerHTML+=`<tr>
-      <td>${a.fecha}</td>
-      <td>${a.agencia}</td>
-      <td>${a.vendedor}</td>
-      <td>${a.tipoAccion}</td>
-      <td>${a.observacion}</td>
-    </tr>`;
+    tbody.innerHTML+=`<tr><td>${a.fecha}</td><td>${a.agencia}</td><td>${a.vendedor}</td><td>${a.tipoAccion}</td><td>${a.observacion}</td></tr>`;
   });
 }
 
-// Cargar Agencias y Vendedores para dropdowns
+// Cargar Agencias y Vendedores en dropdowns
 function cargarAgencias(){
-  fetch(WEB_APP_URL+"?hoja=agencias")
-    .then(r=>r.json())
-    .then(data=>{
-      const sel=document.getElementById('acAgencia');
-      sel.innerHTML='<option value="">Seleccione Agencia</option>';
-      data.forEach(a=>{
-        let opt=document.createElement('option');
-        opt.value=a[0]; // nombre
-        opt.text=a[0];
-        sel.add(opt);
-      });
-    });
+  fetch(WEB_APP_URL+"?hoja=agencias").then(r=>r.json()).then(data=>{
+    const sel=document.getElementById('acAgencia');
+    sel.innerHTML='<option value="">Seleccione Agencia</option>';
+    data.forEach(a=>{let o=document.createElement('option'); o.value=a[0]; o.text=a[0]; sel.add(o);});
+  });
 }
 function cargarVendedores(){
-  fetch(WEB_APP_URL+"?hoja=vendedores")
-    .then(r=>r.json())
-    .then(data=>{
-      const sel=document.getElementById('acVendedor');
-      sel.innerHTML='<option value="">Seleccione Vendedor</option>';
-      data.forEach(v=>{
-        let opt=document.createElement('option');
-        opt.value=v[0]; // nombre
-        opt.text=v[0];
-        sel.add(opt);
-      });
-    });
+  fetch(WEB_APP_URL+"?hoja=vendedores").then(r=>r.json()).then(data=>{
+    const sel=document.getElementById('acVendedor');
+    sel.innerHTML='<option value="">Seleccione Vendedor</option>';
+    data.forEach(v=>{let o=document.createElement('option'); o.value=v[0]; o.text=v[0]; sel.add(o);});
+  });
 }
 
-// Inicializar
+// Inicializar dropdowns
 cargarAgencias();
 cargarVendedores();
 </script>
