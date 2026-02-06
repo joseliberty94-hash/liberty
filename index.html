@@ -4,210 +4,191 @@
 <meta charset="UTF-8">
 <title>CRM Liberty</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
 <style>
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #f4f6f9;
-  display: flex;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 230px;
-  background: #0f172a;
-  color: white;
-  height: 100vh;
-  padding: 20px;
-}
-.sidebar h2 { text-align: center; margin-bottom: 30px; }
-.sidebar a {
-  display: block;
-  padding: 12px;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-.sidebar a:hover { background: #1e293b; }
-
-/* MAIN */
-.main {
-  flex: 1;
-  padding: 25px;
-  overflow-y: auto;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 0 10px rgba(0,0,0,.1);
-  margin-bottom: 20px;
-}
-h2 { margin-top: 0; }
-
-input, select, textarea, button {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin: 5px 0;
-  width: 100%;
-}
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-button:hover {
-  background: #1d4ed8;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-}
-th { background: #e5e7eb; }
-
+body {margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; display:flex;}
+/* Sidebar */
+.sidebar {width:230px; background:#0f172a; color:white; height:100vh; padding:20px;}
+.sidebar h2 {text-align:center; margin-bottom:30px;}
+.sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px;}
+.sidebar a:hover {background:#1e293b;}
+.main {flex:1; padding:25px; overflow-y:auto;}
+.card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
+h2 {margin-top:0;}
+input, select, textarea, button {padding:10px; border-radius:8px; border:1px solid #ccc; margin:5px 0; width:100%;}
+button {background:#2563eb; color:white; border:none; cursor:pointer;}
+button:hover {background:#1d4ed8;}
+table {width:100%; border-collapse:collapse; margin-top:15px;}
+th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
+th {background:#e5e7eb;}
 </style>
 </head>
-
 <body>
 
 <div class="sidebar">
   <h2>CRM Liberty</h2>
-  <a href="#">📋 CRM Comercial</a>
-  <a href="#">📊 Liberty Statistic</a>
+  <a href="#" onclick="mostrarSeccion('agencias')">🏢 Agencias</a>
+  <a href="#" onclick="mostrarSeccion('vendedores')">👨‍💼 Vendedores</a>
+  <a href="#" onclick="mostrarSeccion('acciones')">📋 Acciones Comerciales</a>
 </div>
 
 <div class="main">
-
-  <!-- AGREGAR AGENCIA -->
-  <div class="card">
+  <!-- Agencias -->
+  <div id="agencias" class="card seccion">
     <h2>Registrar Agencia</h2>
-    <input type="text" id="agenciaNombre" placeholder="Nombre de Agencia">
+    <input type="text" id="agNombre" placeholder="Nombre">
+    <input type="email" id="agMail" placeholder="Mail">
+    <input type="text" id="agTelefono" placeholder="Teléfono">
     <button onclick="guardarAgencia()">Guardar Agencia</button>
   </div>
 
-  <!-- AGREGAR ACCIÓN -->
-  <div class="card">
-    <h2>Registrar Acción Comercial</h2>
-    <input type="text" id="cliente" placeholder="Cliente">
-    <select id="agenciaSelect"><option value="">Seleccione Agencia</option></select>
-    <input type="text" id="vendedor" placeholder="Vendedor">
-    <input type="text" id="tipoAccion" placeholder="Tipo de acción">
-    <input type="date" id="fecha">
-    <textarea id="observaciones" placeholder="Observaciones"></textarea>
-    <button onclick="guardarAccion()">Guardar Acción</button>
+  <!-- Vendedores -->
+  <div id="vendedores" class="card seccion" style="display:none;">
+    <h2>Registrar Vendedor</h2>
+    <input type="text" id="veNombre" placeholder="Nombre">
+    <input type="email" id="veMail" placeholder="Mail">
+    <select id="veEstado">
+      <option value="Activo">Activo</option>
+      <option value="Inactivo">Inactivo</option>
+    </select>
+    <button onclick="guardarVendedor()">Guardar Vendedor</button>
   </div>
 
-  <!-- TABLA -->
-  <div class="card">
-    <h2>Acciones Registradas</h2>
+  <!-- Acciones -->
+  <div id="acciones" class="card seccion" style="display:none;">
+    <h2>Registrar Acción Comercial</h2>
+    <input type="date" id="acFecha">
+    <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
+    <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
+    <input type="text" id="acTipo" placeholder="Tipo de Acción">
+    <textarea id="acObs" placeholder="Observación"></textarea>
+    <button onclick="guardarAccion()">Guardar Acción</button>
+
+    <h2>Listado de Acciones</h2>
     <table>
       <thead>
         <tr>
-          <th>Fecha</th>
-          <th>Agencia</th>
-          <th>Vendedor</th>
-          <th>Tipo</th>
-          <th>Observación</th>
+          <th>Fecha</th><th>Agencia</th><th>Vendedor</th><th>Tipo</th><th>Observación</th>
         </tr>
       </thead>
       <tbody id="tablaAcciones"></tbody>
     </table>
   </div>
-
 </div>
 
 <script>
-let agencias = [];
-let acciones = [];
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-lWB8FjrzJUhvBlFGFwncfVC6COIROBl3dQyLxG7QFP9zKDDjVQ/exec";
 
+function mostrarSeccion(id){
+  document.querySelectorAll('.seccion').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+// Guardar Agencia
 function guardarAgencia(){
-  const nombre = document.getElementById("agenciaNombre").value.trim();
-  if(!nombre) return alert("Ingrese nombre de agencia");
-  agencias.push(nombre);
-  actualizarAgencias();
-  document.getElementById("agenciaNombre").value = "";
+  const nombre=document.getElementById('agNombre').value;
+  const mail=document.getElementById('agMail').value;
+  const tel=document.getElementById('agTelefono').value;
+  if(!nombre || !mail) return alert("Complete todos los campos obligatorios");
+  fetch(WEB_APP_URL, {
+    method:"POST",
+    body: JSON.stringify({tipo:"agencia", nombre, mail, telefono:tel})
+  }).then(r=>r.json()).then(resp=>{
+    alert("Agencia guardada!");
+    document.getElementById('agNombre').value="";
+    document.getElementById('agMail').value="";
+    document.getElementById('agTelefono').value="";
+    cargarAgencias();
+  }).catch(e=>alert("Error: "+e));
 }
 
-function actualizarAgencias(){
-  const select = document.getElementById("agenciaSelect");
-  select.innerHTML = '<option value="">Seleccione Agencia</option>';
-  agencias.forEach(a => {
-    let op = document.createElement("option");
-    op.value = a;
-    op.text = a;
-    select.add(op);
-  });
+// Guardar Vendedor
+function guardarVendedor(){
+  const nombre=document.getElementById('veNombre').value;
+  const mail=document.getElementById('veMail').value;
+  const estado=document.getElementById('veEstado').value;
+  if(!nombre || !mail) return alert("Complete todos los campos obligatorios");
+  fetch(WEB_APP_URL, {
+    method:"POST",
+    body: JSON.stringify({tipo:"vendedor", nombre, mail, estado})
+  }).then(r=>r.json()).then(resp=>{
+    alert("Vendedor guardado!");
+    document.getElementById('veNombre').value="";
+    document.getElementById('veMail').value="";
+    cargarVendedores();
+  }).catch(e=>alert("Error: "+e));
 }
 
+// Guardar Acción Comercial
+let acciones=[];
 function guardarAccion(){
-  const vFecha = document.getElementById("fecha").value;
-  const vAgencia = document.getElementById("agenciaSelect").value;
-  const vVendedor = document.getElementById("vendedor").value;
-  const vTipo = document.getElementById("tipoAccion").value;
-  const vObs = document.getElementById("observaciones").value;
-
-  if(!vFecha || !vAgencia || !vVendedor || !vTipo){
-    return alert("Complete todos los campos obligatorios");
-  }
-
-  const nuevaAccion = {
-    fecha: vFecha,
-    agencia: vAgencia,
-    vendedor: vVendedor,
-    tipoAccion: vTipo,
-    observacion: vObs
-  };
-
-  // Enviar a tu Google Sheet
-  fetch("https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-lWB8FjrzJUhvBlFGFwncfVC6COIROBl3dQyLxG7QFP9zKDDjVQ/exec", {
-    method: "POST",
-    body: JSON.stringify(nuevaAccion)
-  })
-  .then(res => res.json())
-  .then(resp => {
-    alert("Acción guardada en Google Sheet!");
-    acciones.push(nuevaAccion);
+  const fecha=document.getElementById('acFecha').value;
+  const agencia=document.getElementById('acAgencia').value;
+  const vendedor=document.getElementById('acVendedor').value;
+  const tipo=document.getElementById('acTipo').value;
+  const obs=document.getElementById('acObs').value;
+  if(!fecha || !agencia || !vendedor || !tipo) return alert("Complete todos los campos obligatorios");
+  const accion={tipo:"accion", fecha, agencia, vendedor, tipoAccion:tipo, observacion:obs};
+  fetch(WEB_APP_URL,{
+    method:"POST",
+    body:JSON.stringify(accion)
+  }).then(r=>r.json()).then(resp=>{
+    alert("Acción guardada!");
+    acciones.push({fecha, agencia, vendedor, tipoAccion:tipo, observacion:obs});
     mostrarAcciones();
-    // Limpiar form
-    document.getElementById("cliente").value = "";
-    document.getElementById("vendedor").value = "";
-    document.getElementById("tipoAccion").value = "";
-    document.getElementById("fecha").value = "";
-    document.getElementById("observaciones").value = "";
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Error guardando la acción");
-  });
+    document.getElementById('acFecha').value="";
+    document.getElementById('acTipo').value="";
+    document.getElementById('acObs').value="";
+  }).catch(e=>alert("Error: "+e));
 }
 
+// Mostrar tabla
 function mostrarAcciones(){
-  const tabla = document.getElementById("tablaAcciones");
-  tabla.innerHTML = "";
-  acciones.forEach(a => {
-    tabla.innerHTML += `
-      <tr>
-        <td>${a.fecha}</td>
-        <td>${a.agencia}</td>
-        <td>${a.vendedor}</td>
-        <td>${a.tipoAccion}</td>
-        <td>${a.observacion}</td>
-      </tr>`;
+  const tbody=document.getElementById('tablaAcciones');
+  tbody.innerHTML="";
+  acciones.forEach(a=>{
+    tbody.innerHTML+=`<tr>
+      <td>${a.fecha}</td>
+      <td>${a.agencia}</td>
+      <td>${a.vendedor}</td>
+      <td>${a.tipoAccion}</td>
+      <td>${a.observacion}</td>
+    </tr>`;
   });
 }
 
+// Cargar Agencias y Vendedores para dropdowns
+function cargarAgencias(){
+  fetch(WEB_APP_URL+"?hoja=agencias")
+    .then(r=>r.json())
+    .then(data=>{
+      const sel=document.getElementById('acAgencia');
+      sel.innerHTML='<option value="">Seleccione Agencia</option>';
+      data.forEach(a=>{
+        let opt=document.createElement('option');
+        opt.value=a[0]; // nombre
+        opt.text=a[0];
+        sel.add(opt);
+      });
+    });
+}
+function cargarVendedores(){
+  fetch(WEB_APP_URL+"?hoja=vendedores")
+    .then(r=>r.json())
+    .then(data=>{
+      const sel=document.getElementById('acVendedor');
+      sel.innerHTML='<option value="">Seleccione Vendedor</option>';
+      data.forEach(v=>{
+        let opt=document.createElement('option');
+        opt.value=v[0]; // nombre
+        opt.text=v[0];
+        sel.add(opt);
+      });
+    });
+}
+
+// Inicializar
+cargarAgencias();
+cargarVendedores();
 </script>
 
 </body>
