@@ -17,15 +17,19 @@ body {margin:0; font-family:'Poppins',sans-serif; background:#f4f6f9; display:fl
 .main {flex:1; padding:25px; overflow-y:auto;}
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
 h2 {margin-top:0;}
-input, select, textarea, button {padding:10px; border-radius:8px; border:1px solid #ccc; margin:5px 0; width:100%;}
+input, select, textarea, button {padding:10px; border-radius:8px; border:1px solid #ccc; margin:5px 0;}
 button {background:#2563eb; color:white; border:none; cursor:pointer;}
 button:hover {background:#1d4ed8;}
 table {width:100%; border-collapse:collapse; margin-top:15px;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
 th {background:#e5e7eb;}
 
+/* Botones registro */
+.botones-registro {display:flex; gap:10px; margin-bottom:15px;}
+.botones-registro button {flex:1; font-size:14px; padding:8px;}
+
 /* Formularios ocultos inicialmente */
-.formulario {display:none; margin-top:15px;}
+.formulario {display:none; margin-bottom:20px;}
 </style>
 </head>
 <body>
@@ -41,43 +45,43 @@ th {background:#e5e7eb;}
   <div id="crmComercial" class="seccion">
     <div class="card">
       <h2>CRM Comercial</h2>
-      <button onclick="abrirFormulario('formAgencias')">Registrar Agencia</button>
-      <button onclick="abrirFormulario('formVendedores')">Registrar Vendedor</button>
-      <button onclick="abrirFormulario('formAcciones')">Registrar Acción Comercial</button>
+      <div class="botones-registro">
+        <button onclick="abrirFormulario('formAgencias')">Agencia</button>
+        <button onclick="abrirFormulario('formVendedores')">Vendedor</button>
+        <button onclick="abrirFormulario('formAcciones')">Acción</button>
+      </div>
+
+      <!-- Formularios -->
+      <div id="formAgencias" class="formulario">
+        <input type="text" id="agNombre" placeholder="Nombre">
+        <input type="email" id="agMail" placeholder="Mail">
+        <input type="text" id="agTelefono" placeholder="Teléfono">
+        <button onclick="guardarAgencia()">Guardar Agencia</button>
+      </div>
+
+      <div id="formVendedores" class="formulario">
+        <input type="text" id="veNombre" placeholder="Nombre">
+        <input type="email" id="veMail" placeholder="Mail">
+        <select id="veEstado">
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+        <button onclick="guardarVendedor()">Guardar Vendedor</button>
+      </div>
+
+      <div id="formAcciones" class="formulario">
+        <input type="date" id="acFecha">
+        <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
+        <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
+        <input type="text" id="acTipo" placeholder="Tipo de Acción">
+        <textarea id="acObs" placeholder="Observación"></textarea>
+        <button onclick="guardarAccion()">Guardar Acción</button>
+      </div>
     </div>
 
-    <!-- Formulario Agencias -->
-    <div id="formAgencias" class="card formulario">
-      <h2>Registrar Agencia</h2>
-      <input type="text" id="agNombre" placeholder="Nombre">
-      <input type="email" id="agMail" placeholder="Mail">
-      <input type="text" id="agTelefono" placeholder="Teléfono">
-      <button onclick="guardarAgencia()">Guardar Agencia</button>
-    </div>
-
-    <!-- Formulario Vendedores -->
-    <div id="formVendedores" class="card formulario">
-      <h2>Registrar Vendedor</h2>
-      <input type="text" id="veNombre" placeholder="Nombre">
-      <input type="email" id="veMail" placeholder="Mail">
-      <select id="veEstado">
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
-      </select>
-      <button onclick="guardarVendedor()">Guardar Vendedor</button>
-    </div>
-
-    <!-- Formulario Acciones -->
-    <div id="formAcciones" class="card formulario">
-      <h2>Registrar Acción Comercial</h2>
-      <input type="date" id="acFecha">
-      <select id="acAgencia"><option value="">Seleccione Agencia</option></select>
-      <select id="acVendedor"><option value="">Seleccione Vendedor</option></select>
-      <input type="text" id="acTipo" placeholder="Tipo de Acción">
-      <textarea id="acObs" placeholder="Observación"></textarea>
-      <button onclick="guardarAccion()">Guardar Acción</button>
-
-      <h2>Listado de Acciones</h2>
+    <!-- Tabla de Acciones siempre visible -->
+    <div class="card">
+      <h2>Listado de Acciones Comerciales</h2>
       <table>
         <thead>
           <tr>
@@ -87,7 +91,6 @@ th {background:#e5e7eb;}
         <tbody id="tablaAcciones"></tbody>
       </table>
     </div>
-
   </div>
 
   <!-- Liberty Statistics -->
@@ -115,7 +118,7 @@ function abrirFormulario(id){
 // Acciones locales
 let acciones=[];
 
-// CRUD Agencias y Vendedores
+// Guardar Agencia
 function guardarAgencia(){
   const nombre=document.getElementById('agNombre').value;
   const mail=document.getElementById('agMail').value;
@@ -127,6 +130,7 @@ function guardarAgencia(){
 }
 function limpiarAgencia(){document.getElementById('agNombre').value=''; document.getElementById('agMail').value=''; document.getElementById('agTelefono').value='';}
 
+// Guardar Vendedor
 function guardarVendedor(){
   const nombre=document.getElementById('veNombre').value;
   const mail=document.getElementById('veMail').value;
@@ -138,6 +142,7 @@ function guardarVendedor(){
 }
 function limpiarVendedor(){document.getElementById('veNombre').value=''; document.getElementById('veMail').value='';}
 
+// Guardar Acción
 function guardarAccion(){
   const fecha=document.getElementById('acFecha').value;
   const agencia=document.getElementById('acAgencia').value;
@@ -164,7 +169,7 @@ function mostrarAcciones(){
   });
 }
 
-// Cargar Agencias y Vendedores en dropdowns
+// Cargar Agencias y Vendedores
 function cargarAgencias(){
   fetch(WEB_APP_URL+"?hoja=agencias").then(r=>r.json()).then(data=>{
     const sel=document.getElementById('acAgencia');
@@ -180,9 +185,30 @@ function cargarVendedores(){
   });
 }
 
-// Inicializar dropdowns
+// Cargar acciones existentes desde Google Sheet
+function cargarAcciones(){
+  fetch(WEB_APP_URL + "?hoja=acciones")
+    .then(r => r.json())
+    .then(data => {
+      acciones = [];
+      data.forEach(row => {
+        acciones.push({
+          fecha: row[0],
+          agencia: row[1],
+          vendedor: row[2],
+          tipoAccion: row[3],
+          observacion: row[4]
+        });
+      });
+      mostrarAcciones();
+    })
+    .catch(e => console.error("Error cargando acciones:", e));
+}
+
+// Inicializar dropdowns y tabla al iniciar
 cargarAgencias();
 cargarVendedores();
+cargarAcciones();
 </script>
 
 </body>
