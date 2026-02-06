@@ -15,12 +15,11 @@ body {
 
 /* SIDEBAR */
 .sidebar {
-  width: 230px;
+  width: 240px;
   background: #0f172a;
   color: white;
   height: 100vh;
   padding: 20px;
-  box-sizing: border-box;
 }
 
 .sidebar h2 {
@@ -45,21 +44,27 @@ body {
 .main {
   flex: 1;
   padding: 25px;
+  overflow-y: auto;
 }
 
 .card {
   background: white;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 0 10px rgba(0,0,0,.1);
   margin-bottom: 20px;
 }
 
-input, select, button {
+h2 {
+  margin-top: 0;
+}
+
+input, select, textarea, button {
   padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   margin: 5px;
+  width: 100%;
 }
 
 button {
@@ -72,6 +77,29 @@ button {
 button:hover {
   background: #1d4ed8;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background: #e5e7eb;
+}
+
 </style>
 </head>
 
@@ -79,33 +107,113 @@ button:hover {
 
 <div class="sidebar">
   <h2>CRM Liberty</h2>
-  <a href="#" onclick="mostrarCRM()">📋 CRM Comercial</a>
-  <a href="#" onclick="mostrarStats()">📊 Liberty Statistic</a>
+  <a href="#">📋 CRM Comercial</a>
+  <a href="#">📊 Liberty Statistic</a>
 </div>
 
 <div class="main">
 
-  <div id="crmSection" class="card">
-    <h2>CRM Comercial</h2>
-    <p>Gestión de acciones comerciales</p>
+  <!-- AGENCIAS -->
+  <div class="card">
+    <h2>Registrar Agencia</h2>
+    <div class="grid">
+      <input type="text" id="agenciaNombre" placeholder="Nombre de Agencia">
+      <button onclick="guardarAgencia()">Guardar Agencia</button>
+    </div>
   </div>
 
-  <div id="statsSection" class="card" style="display:none;">
-    <h2>Liberty Statistic</h2>
-    <p>Panel de estadísticas (próximamente)</p>
+  <!-- ACCIONES -->
+  <div class="card">
+    <h2>Registrar Acción Comercial</h2>
+    <div class="grid">
+      <input type="text" id="cliente" placeholder="Cliente">
+      <select id="agenciaSelect"></select>
+      <input type="text" id="vendedor" placeholder="Vendedor">
+      <input type="text" id="tipoAccion" placeholder="Tipo de acción">
+      <input type="date" id="fecha">
+      <select id="estado">
+        <option>Pendiente</option>
+        <option>Cerrado</option>
+      </select>
+      <textarea id="observaciones" placeholder="Observaciones"></textarea>
+      <button onclick="guardarAccion()">Guardar Acción</button>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="card">
+    <h2>Listado de Acciones</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Agencia</th>
+          <th>Vendedor</th>
+          <th>Tipo</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaAcciones"></tbody>
+    </table>
   </div>
 
 </div>
 
 <script>
-function mostrarCRM(){
-  document.getElementById("crmSection").style.display="block";
-  document.getElementById("statsSection").style.display="none";
+let agencias = [];
+let acciones = [];
+
+function guardarAgencia(){
+  const nombre = document.getElementById("agenciaNombre").value;
+  if(!nombre) return alert("Ingrese agencia");
+  agencias.push(nombre);
+  actualizarAgencias();
+  document.getElementById("agenciaNombre").value="";
 }
 
-function mostrarStats(){
-  document.getElementById("crmSection").style.display="none";
-  document.getElementById("statsSection").style.display="block";
+function actualizarAgencias(){
+  const select = document.getElementById("agenciaSelect");
+  select.innerHTML="";
+  agencias.forEach(a=>{
+    let option=document.createElement("option");
+    option.text=a;
+    select.add(option);
+  });
+}
+
+function guardarAccion(){
+  const accion={
+    cliente: cliente.value,
+    agencia: agenciaSelect.value,
+    vendedor: vendedor.value,
+    tipo: tipoAccion.value,
+    fecha: fecha.value,
+    estado: estado.value,
+    obs: observaciones.value
+  };
+
+  acciones.push(accion);
+  mostrarAcciones();
+}
+
+function mostrarAcciones(){
+  const tabla=document.getElementById("tablaAcciones");
+  tabla.innerHTML="";
+  acciones.forEach(a=>{
+    tabla.innerHTML+=`
+      <tr>
+        <td>${a.cliente}</td>
+        <td>${a.agencia}</td>
+        <td>${a.vendedor}</td>
+        <td>${a.tipo}</td>
+        <td>${a.fecha}</td>
+        <td>${a.estado}</td>
+        <td>${a.obs}</td>
+      </tr>
+    `;
+  });
 }
 </script>
 
