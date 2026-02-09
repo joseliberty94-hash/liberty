@@ -4,29 +4,65 @@
 <meta charset="UTF-8">
 <title>CRM Liberty</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
 <style>
 body {margin:0; font-family:'Poppins',sans-serif; display:flex; background:#f4f6f9;}
 .sidebar {width:230px; background:#0f172a; color:white; height:100vh; padding:20px;}
 .sidebar h2 {text-align:center; margin-bottom:30px;}
 .sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px; cursor:pointer;}
 .sidebar a:hover {background:#1e293b;}
-.main {flex:1; padding:25px; overflow-y:auto;}
+
+.main {
+  flex:1;
+  padding:25px;
+  height:100vh;
+  overflow:hidden;
+}
+
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
 h2 {margin-top:0;}
 input, select, textarea, button {padding:10px; border-radius:8px; border:1px solid #ccc; margin:5px 0;}
 button {background:#2563eb; color:white; border:none; cursor:pointer;}
 button:hover {background:#1d4ed8;}
-table {width:100%; border-collapse:collapse; margin-top:15px;}
+table {width:100%; border-collapse:collapse;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
 th {background:#e5e7eb;}
+
 .botones-registro {display:flex; gap:10px; margin-bottom:15px;}
 .botones-registro button {flex:1; font-size:14px; padding:8px;}
-.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:100;}
+
+.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:200;}
 .modal-content {background:white; padding:25px; border-radius:12px; width:400px; max-width:90%; position:relative;}
 .modal-close {position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold; font-size:18px;}
+
 .filtros {display:flex; gap:10px; flex-wrap:wrap;}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.sticky-filtros {
+  position: sticky;
+  top: 150px;
+  z-index: 90;
+}
+
+.table-container {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background: #e5e7eb;
+  z-index: 50;
+}
 </style>
 </head>
+
 <body>
 
 <div class="sidebar">
@@ -39,7 +75,7 @@ th {background:#e5e7eb;}
 
 <div id="crmComercial" class="seccion">
 
-<div class="card">
+<div class="card sticky-top">
 <h2>CRM Comercial</h2>
 <div class="botones-registro">
 <button onclick="abrirModal('modalAgencias')">Agencia</button>
@@ -48,7 +84,7 @@ th {background:#e5e7eb;}
 </div>
 </div>
 
-<div class="card">
+<div class="card sticky-filtros">
 <h2>Listado de Acciones Comerciales</h2>
 
 <div class="filtros">
@@ -76,16 +112,23 @@ th {background:#e5e7eb;}
 <button onclick="aplicarFiltros()">Filtrar</button>
 <button onclick="limpiarFiltros()">Limpiar</button>
 </div>
+</div>
 
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th>Fecha</th><th>Agencia</th><th>Vendedor</th><th>Tipo</th><th>Observación</th>
+<th>Fecha</th>
+<th>Agencia</th>
+<th>Vendedor</th>
+<th>Tipo</th>
+<th>Observación</th>
 </tr>
 </thead>
 <tbody id="tablaAcciones"></tbody>
 </table>
 </div>
+
 </div>
 
 <div id="libertyStats" class="seccion" style="display:none;">
@@ -181,14 +224,11 @@ function llenarFiltros(){
 const agencias=[...new Set(accionesOriginal.map(a=>a.agencia))];
 const vendedores=[...new Set(accionesOriginal.map(a=>a.vendedor))];
 
-const fa=document.getElementById("filtroAgencia");
-const fv=document.getElementById("filtroVendedor");
+filtroAgencia.innerHTML='<option value="">Agencia</option>';
+filtroVendedor.innerHTML='<option value="">Vendedor</option>';
 
-fa.innerHTML='<option value="">Agencia</option>';
-fv.innerHTML='<option value="">Vendedor</option>';
-
-agencias.forEach(a=>fa.innerHTML+=`<option>${a}</option>`);
-vendedores.forEach(v=>fv.innerHTML+=`<option>${v}</option>`);
+agencias.forEach(a=>filtroAgencia.innerHTML+=`<option>${a}</option>`);
+vendedores.forEach(v=>filtroVendedor.innerHTML+=`<option>${v}</option>`);
 }
 
 function aplicarFiltros(){
@@ -252,5 +292,6 @@ cargarAgencias();
 cargarVendedores();
 cargarAcciones();
 </script>
+
 </body>
 </html>
