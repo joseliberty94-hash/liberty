@@ -12,18 +12,14 @@ body {margin:0; font-family:'Poppins',sans-serif; display:flex; background:#f4f6
 .sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px; cursor:pointer;}
 .sidebar a:hover {background:#1e293b;}
 
-.main {
-  flex:1;
-  padding:25px;
-  height:100vh;
-  overflow:hidden;
-}
+.main {flex:1; padding:25px; height:100vh; overflow:hidden;}
 
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
 h2 {margin-top:0;}
-input, select, textarea, button {padding:10px; border-radius:8px; border:1px solid #ccc; margin:5px 0;}
+input, select, textarea, button {padding:10px; border-radius:8px; border:1px solid #ccc; margin:5px 0; width:100%;}
 button {background:#2563eb; color:white; border:none; cursor:pointer;}
 button:hover {background:#1d4ed8;}
+
 table {width:100%; border-collapse:collapse;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
 th {background:#e5e7eb;}
@@ -37,29 +33,13 @@ th {background:#e5e7eb;}
 
 .filtros {display:flex; gap:10px; flex-wrap:wrap;}
 
-.sticky-top {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+.sticky-top {position: sticky; top: 0; z-index: 100;}
+.sticky-filtros {position: sticky; top: 150px; z-index: 90;}
 
-.sticky-filtros {
-  position: sticky;
-  top: 150px;
-  z-index: 90;
-}
+.table-container {max-height: 420px; overflow-y: auto;}
+thead th {position: sticky; top: 0; background: #e5e7eb; z-index: 50;}
 
-.table-container {
-  max-height: 420px;
-  overflow-y: auto;
-}
-
-thead th {
-  position: sticky;
-  top: 0;
-  background: #e5e7eb;
-  z-index: 50;
-}
+tr:hover {background:#eef2ff;}
 </style>
 </head>
 
@@ -106,8 +86,8 @@ thead th {
 <option value="12">Diciembre</option>
 </select>
 
-<select id="filtroAgencia"><option value="">Agencia</option></select>
-<select id="filtroVendedor"><option value="">Vendedor</option></select>
+<select id="filtroAgencia"></select>
+<select id="filtroVendedor"></select>
 
 <button onclick="aplicarFiltros()">Filtrar</button>
 <button onclick="limpiarFiltros()">Limpiar</button>
@@ -176,11 +156,28 @@ thead th {
 </div>
 </div>
 
+<!-- MODAL EDITAR -->
+<div id="modalEditarAccion" class="modal">
+<div class="modal-content">
+<span class="modal-close" onclick="cerrarModal('modalEditarAccion')">&times;</span>
+<h2>Editar Acción</h2>
+
+<input type="date" id="editFecha">
+<input id="editAgencia" placeholder="Agencia">
+<input id="editVendedor" placeholder="Vendedor">
+<input id="editTipo" placeholder="Tipo Acción">
+<textarea id="editObs" placeholder="Observación"></textarea>
+
+<button onclick="guardarEdicion()">Guardar Cambios</button>
+</div>
+</div>
+
 <script>
 const WEB_APP_URL="https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-lWB8FjrzJUhvBlFGFwncfVC6COIROBl3dQyLxG7QFP9zKDDjVQ/exec";
 
 let acciones=[];
 let accionesOriginal=[];
+let accionSeleccionadaIndex=null;
 
 function mostrarSeccion(id){
 document.querySelectorAll('.seccion').forEach(s=>s.style.display='none');
@@ -202,21 +199,54 @@ fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Acciones comerciales"))
 acciones=data.map(r=>({fecha:r[0],agencia:r[1],vendedor:r[2],tipoAccion:r[3],observacion:r[4]}));
 accionesOriginal=[...acciones];
 llenarFiltros();
-mostrarAcciones(acciones);
+mostrarAcciones(accionesOriginal);
 });
 }
 
 function mostrarAcciones(lista){
 const tbody=document.getElementById("tablaAcciones");
 tbody.innerHTML="";
-lista.forEach(a=>{
-tbody.innerHTML+=`<tr>
+lista.forEach((a,index)=>{
+tbody.innerHTML+=`
+<tr onclick="abrirEditarAccion(${index})" style="cursor:pointer;">
 <td>${formatearFecha(a.fecha)}</td>
 <td>${a.agencia}</td>
 <td>${a.vendedor}</td>
 <td>${a.tipoAccion}</td>
 <td>${a.observacion}</td>
 </tr>`;
+});
+}
+
+function abrirEditarAccion(index){
+accionSeleccionadaIndex=index;
+const a=accionesOriginal[index];
+
+editFecha.value=formatearFecha(a.fecha);
+editAgencia.value=a.agencia;
+editVendedor.value=a.vendedor;
+editTipo.value=a.tipoAccion;
+editObs.value=a.observacion;
+
+abrirModal("modalEditarAccion");
+}
+
+function guardarEdicion(){
+fetch(WEB_APP_URL,{
+method:"POST",
+body:JSON.stringify({
+tipo:"editarAccion",
+index:accionSeleccionadaIndex,
+fecha:editFecha.value,
+agencia:editAgencia.value,
+vendedor:editVendedor.value,
+tipoAccion:editTipo.value,
+observacion:editObs.value
+})
+}).then(()=>{
+alert("Acción actualizada");
+cerrarModal("modalEditarAccion");
+cargarAcciones();
 });
 }
 
@@ -245,7 +275,6 @@ if(fAg) ok &= a.agencia==fAg;
 if(fVe) ok &= a.vendedor==fVe;
 return ok;
 });
-
 mostrarAcciones(res);
 }
 
