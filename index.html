@@ -11,115 +11,45 @@ body {margin:0; font-family:'Poppins',sans-serif; display:flex; background:#f4f6
 .sidebar h2 {text-align:center; margin-bottom:30px;}
 .sidebar a {display:block; padding:12px; color:white; text-decoration:none; border-radius:8px; margin-bottom:10px; cursor:pointer;}
 .sidebar a:hover {background:#1e293b;}
-
 .main {flex:1; padding:25px; height:100vh; overflow:hidden;}
-
 .card {background:white; padding:20px; border-radius:14px; box-shadow:0 0 10px rgba(0,0,0,.1); margin-bottom:20px;}
-h2 {margin-top:0;}
-
-input, select, textarea, button {
-padding:8px;
-border-radius:8px;
-border:1px solid #ccc;
-font-family:'Poppins',sans-serif;
-}
-
-button {
-background:#2563eb;
-color:white;
-border:none;
-cursor:pointer;
-}
-button:hover {background:#1d4ed8;}
-
-.btn-sec{
-background:#64748b;
-}
-.btn-sec:hover{
-background:#475569;
-}
-
 table {width:100%; border-collapse:collapse;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
-th {background:#e5e7eb;}
+th {background:#e5e7eb; position:sticky; top:0;}
 tr:hover {background:#eef2ff; cursor:pointer;}
-
 .botones-registro {display:flex; gap:10px; margin-bottom:15px;}
-.botones-registro button {flex:1; font-size:14px;}
-
-.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:200;}
-.modal-content {background:white; padding:25px; border-radius:12px; width:400px; max-width:90%; position:relative;}
-.modal-close {position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold; font-size:18px;}
-
-.sticky-top {position: sticky; top: 0; z-index: 100;}
-.sticky-filtros {position: sticky; top: 150px; z-index: 90;}
-
-.table-container {max-height: 420px; overflow-y: auto;}
-thead th {position: sticky; top: 0; background: #e5e7eb; z-index: 50;}
-
-/* FILTROS LINDOS */
-.filtros-grid{
-display:grid;
-grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-gap:12px;
-align-items:end;
-background:#f8fafc;
-padding:15px;
-border-radius:12px;
-}
-
-.filtro-item{
-display:flex;
-flex-direction:column;
-font-size:13px;
-}
-
-.filtro-item label{
-font-weight:500;
-margin-bottom:4px;
-color:#374151;
-}
-
-.filtro-botones{
-display:flex;
-gap:8px;
-}
+.modal {display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); justify-content:center; align-items:center; z-index:200;}
+.modal-content {background:white; padding:25px; border-radius:12px; width:400px;}
+.modal-close {position:absolute; top:10px; right:15px; cursor:pointer;}
+.table-container {max-height:420px; overflow-y:auto;}
+.filtros-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px;}
 </style>
 </head>
 
 <body>
 
 <div class="sidebar">
-  <h2>CRM Liberty</h2>
-  <a onclick="mostrarSeccion('crmComercial')">📋 CRM Comercial</a>
-  <a onclick="mostrarSeccion('libertyStats')">📊 Liberty Statistics</a>
+<h2>CRM Liberty</h2>
+<a onclick="mostrarSeccion('crmComercial')">📋 CRM Comercial</a>
+<a onclick="mostrarSeccion('libertyStats')">📊 Liberty Statistics</a>
 </div>
 
 <div class="main">
 
-<div id="crmComercial" class="seccion">
+<div id="crmComercial">
 
-<div class="card sticky-top">
+<div class="card">
 <h2>CRM Comercial</h2>
 <div class="botones-registro">
-<button onclick="abrirModal('modalAgencias')">Agencia</button>
-<button onclick="abrirModal('modalVendedores')">Vendedor</button>
 <button onclick="abrirModal('modalAcciones')">Acción</button>
 </div>
 </div>
 
-<div class="card sticky-filtros">
-<h2>Listado de Acciones Comerciales</h2>
+<div class="card">
+<h2>Listado</h2>
 
 <div class="filtros-grid">
-
-<div class="filtro-item">
-<label>Fecha</label>
 <input type="date" id="filtroFecha">
-</div>
-
-<div class="filtro-item">
-<label>Mes</label>
 <select id="filtroMes">
 <option value="">Mes</option>
 <option value="01">Enero</option>
@@ -135,23 +65,10 @@ gap:8px;
 <option value="11">Noviembre</option>
 <option value="12">Diciembre</option>
 </select>
-</div>
-
-<div class="filtro-item">
-<label>Agencia</label>
 <select id="filtroAgencia"></select>
-</div>
-
-<div class="filtro-item">
-<label>Vendedor</label>
 <select id="filtroVendedor"></select>
-</div>
-
-<div class="filtro-botones">
 <button onclick="aplicarFiltros()">Filtrar</button>
-<button onclick="limpiarFiltros()" class="btn-sec">Limpiar</button>
-</div>
-
+<button onclick="limpiarFiltros()">Limpiar</button>
 </div>
 </div>
 
@@ -172,51 +89,15 @@ gap:8px;
 
 </div>
 
-<div id="libertyStats" class="seccion" style="display:none;">
+<div id="libertyStats" style="display:none">
 <div class="card">
 <h2>Liberty Statistics</h2>
-<p>Próximamente gráficos y KPIs</p>
 </div>
 </div>
 
 </div>
 
-<!-- MODALES -->
-<div id="modalAgencias" class="modal">
-<div class="modal-content">
-<span class="modal-close" onclick="cerrarModal('modalAgencias')">&times;</span>
-<h2>Registrar Agencia</h2>
-<input id="agNombre" placeholder="Nombre">
-<input id="agMail" placeholder="Mail">
-<input id="agTelefono" placeholder="Teléfono">
-<button onclick="guardarAgencia()">Guardar</button>
-</div>
-</div>
-
-<div id="modalVendedores" class="modal">
-<div class="modal-content">
-<span class="modal-close" onclick="cerrarModal('modalVendedores')">&times;</span>
-<h2>Registrar Vendedor</h2>
-<input id="veNombre" placeholder="Nombre">
-<input id="veMail" placeholder="Mail">
-<select id="veEstado"><option>Activo</option><option>Inactivo</option></select>
-<button onclick="guardarVendedor()">Guardar</button>
-</div>
-</div>
-
-<div id="modalAcciones" class="modal">
-<div class="modal-content">
-<span class="modal-close" onclick="cerrarModal('modalAcciones')">&times;</span>
-<h2>Registrar Acción</h2>
-<input type="date" id="acFecha">
-<select id="acAgencia"></select>
-<select id="acVendedor"></select>
-<input id="acTipo" placeholder="Tipo Acción">
-<textarea id="acObs" placeholder="Observación"></textarea>
-<button onclick="guardarAccion()">Guardar</button>
-</div>
-</div>
-
+<!-- MODAL EDITAR -->
 <div id="modalEditarAccion" class="modal">
 <div class="modal-content">
 <span class="modal-close" onclick="cerrarModal('modalEditarAccion')">&times;</span>
@@ -233,12 +114,11 @@ gap:8px;
 <script>
 const WEB_APP_URL="https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-lWB8FjrzJUhvBlFGFwncfVC6COIROBl3dQyLxG7QFP9zKDDjVQ/exec";
 
-let acciones=[];
 let accionesOriginal=[];
-let accionSeleccionadaIndex=null;
+let accionSeleccionadaRow=null;
 
 function mostrarSeccion(id){
-document.querySelectorAll('.seccion').forEach(s=>s.style.display='none');
+document.querySelectorAll('#crmComercial,#libertyStats').forEach(s=>s.style.display='none');
 document.getElementById(id).style.display='block';
 }
 
@@ -246,27 +126,25 @@ function abrirModal(id){document.getElementById(id).style.display='flex';}
 function cerrarModal(id){document.getElementById(id).style.display='none';}
 
 function formatearFecha(f){
-const d=new Date(f);
-return d.toISOString().split("T")[0];
+return new Date(f).toISOString().split("T")[0];
 }
 
 function cargarAcciones(){
 fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Acciones comerciales"))
 .then(r=>r.json())
 .then(data=>{
-acciones=data.map(r=>({fecha:r[0],agencia:r[1],vendedor:r[2],tipoAccion:r[3],observacion:r[4]}));
-accionesOriginal=[...acciones];
+accionesOriginal=data;
 llenarFiltros();
-mostrarAcciones(accionesOriginal);
+mostrarAcciones(data);
 });
 }
 
 function mostrarAcciones(lista){
 const tbody=document.getElementById("tablaAcciones");
 tbody.innerHTML="";
-lista.forEach((a,index)=>{
+lista.forEach(a=>{
 tbody.innerHTML+=`
-<tr onclick="abrirEditarAccion(${index})">
+<tr onclick="abrirEditarAccion(${a.row})">
 <td>${formatearFecha(a.fecha)}</td>
 <td>${a.agencia}</td>
 <td>${a.vendedor}</td>
@@ -276,14 +154,16 @@ tbody.innerHTML+=`
 });
 }
 
-function abrirEditarAccion(index){
-accionSeleccionadaIndex=index;
-const a=accionesOriginal[index];
+function abrirEditarAccion(row){
+accionSeleccionadaRow=row;
+const a=accionesOriginal.find(x=>x.row==row);
+
 editFecha.value=formatearFecha(a.fecha);
 editAgencia.value=a.agencia;
 editVendedor.value=a.vendedor;
 editTipo.value=a.tipoAccion;
 editObs.value=a.observacion;
+
 abrirModal("modalEditarAccion");
 }
 
@@ -292,7 +172,7 @@ fetch(WEB_APP_URL,{
 method:"POST",
 body:JSON.stringify({
 tipo:"editarAccion",
-index:accionSeleccionadaIndex,
+row:accionSeleccionadaRow,
 fecha:editFecha.value,
 agencia:editAgencia.value,
 vendedor:editVendedor.value,
@@ -300,7 +180,7 @@ tipoAccion:editTipo.value,
 observacion:editObs.value
 })
 }).then(()=>{
-alert("Acción actualizada");
+alert("Actualizado");
 cerrarModal("modalEditarAccion");
 cargarAcciones();
 });
@@ -320,6 +200,7 @@ const fFecha=filtroFecha.value;
 const fMes=filtroMes.value;
 const fAg=filtroAgencia.value;
 const fVe=filtroVendedor.value;
+
 const res=accionesOriginal.filter(a=>{
 let ok=true;
 if(fFecha) ok &= formatearFecha(a.fecha)==fFecha;
@@ -328,6 +209,7 @@ if(fAg) ok &= a.agencia==fAg;
 if(fVe) ok &= a.vendedor==fVe;
 return ok;
 });
+
 mostrarAcciones(res);
 }
 
@@ -339,39 +221,6 @@ filtroVendedor.value="";
 mostrarAcciones(accionesOriginal);
 }
 
-function guardarAgencia(){
-fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify({tipo:"agencia",nombre:agNombre.value,mail:agMail.value,telefono:agTelefono.value})})
-.then(()=>{alert("Agencia guardada");cerrarModal('modalAgencias');});
-}
-
-function guardarVendedor(){
-fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify({tipo:"vendedor",nombre:veNombre.value,mail:veMail.value,estado:veEstado.value})})
-.then(()=>{alert("Vendedor guardado");cerrarModal('modalVendedores');});
-}
-
-function guardarAccion(){
-fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify({tipo:"accion",fecha:acFecha.value,agencia:acAgencia.value,vendedor:acVendedor.value,tipoAccion:acTipo.value,observacion:acObs.value})})
-.then(()=>{alert("Acción guardada");cerrarModal('modalAcciones');cargarAcciones();});
-}
-
-function cargarAgencias(){
-fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Agencias"))
-.then(r=>r.json()).then(d=>{
-acAgencia.innerHTML="";
-d.forEach(a=>acAgencia.innerHTML+=`<option>${a[0]}</option>`);
-});
-}
-
-function cargarVendedores(){
-fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Vendedores"))
-.then(r=>r.json()).then(d=>{
-acVendedor.innerHTML="";
-d.forEach(v=>acVendedor.innerHTML+=`<option>${v[0]}</option>`);
-});
-}
-
-cargarAgencias();
-cargarVendedores();
 cargarAcciones();
 </script>
 
