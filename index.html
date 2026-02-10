@@ -24,20 +24,10 @@ border:1px solid #ccc;
 font-family:'Poppins',sans-serif;
 }
 
-button {
-background:#2563eb;
-color:white;
-border:none;
-cursor:pointer;
-}
+button {background:#2563eb;color:white;border:none;cursor:pointer;}
 button:hover {background:#1d4ed8;}
-
-.btn-sec{
-background:#64748b;
-}
-.btn-sec:hover{
-background:#475569;
-}
+.btn-sec{background:#64748b;}
+.btn-sec:hover{background:#475569;}
 
 table {width:100%; border-collapse:collapse;}
 th, td {padding:10px; border-bottom:1px solid #ddd; text-align:center;}
@@ -67,22 +57,9 @@ padding:15px;
 border-radius:12px;
 }
 
-.filtro-item{
-display:flex;
-flex-direction:column;
-font-size:13px;
-}
-
-.filtro-item label{
-font-weight:500;
-margin-bottom:4px;
-color:#374151;
-}
-
-.filtro-botones{
-display:flex;
-gap:8px;
-}
+.filtro-item{display:flex;flex-direction:column;font-size:13px;}
+.filtro-item label{font-weight:500;margin-bottom:4px;color:#374151;}
+.filtro-botones{display:flex;gap:8px;}
 </style>
 </head>
 
@@ -244,8 +221,7 @@ function abrirModal(id){document.getElementById(id).style.display='flex';}
 function cerrarModal(id){document.getElementById(id).style.display='none';}
 
 function formatearFecha(f){
-const d=new Date(f);
-return d.toISOString().split("T")[0];
+return new Date(f).toISOString().split("T")[0];
 }
 
 function cargarAcciones(){
@@ -340,12 +316,12 @@ mostrarAcciones(accionesOriginal);
 
 function guardarAgencia(){
 fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify({tipo:"agencia",nombre:agNombre.value,mail:agMail.value,telefono:agTelefono.value})})
-.then(()=>{alert("Agencia guardada");cerrarModal('modalAgencias');});
+.then(()=>{alert("Agencia guardada");cerrarModal('modalAgencias');cargarAgencias();});
 }
 
 function guardarVendedor(){
 fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify({tipo:"vendedor",nombre:veNombre.value,mail:veMail.value,estado:veEstado.value})})
-.then(()=>{alert("Vendedor guardado");cerrarModal('modalVendedores');});
+.then(()=>{alert("Vendedor guardado");cerrarModal('modalVendedores');cargarVendedores();});
 }
 
 function guardarAccion(){
@@ -356,22 +332,28 @@ fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify({tipo:"accion",fecha:acFech
 function cargarAgencias(){
 fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Agencias"))
 .then(r=>r.json()).then(d=>{
-acAgencia.innerHTML="";
-d.forEach(a=>acAgencia.innerHTML+=`<option>${a[0]}</option>`);
+acAgencia.innerHTML='<option value="">Seleccione Agencia</option>';
+d.forEach(a=>{
+if(a[0]) acAgencia.innerHTML+=`<option>${a[0]}</option>`;
+});
 });
 }
 
 function cargarVendedores(){
 fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Vendedores"))
 .then(r=>r.json()).then(d=>{
-acVendedor.innerHTML="";
-d.forEach(v=>acVendedor.innerHTML+=`<option>${v[0]}</option>`);
+acVendedor.innerHTML='<option value="">Seleccione Vendedor</option>';
+d.forEach(v=>{
+if(v[0]) acVendedor.innerHTML+=`<option>${v[0]}</option>`;
+});
 });
 }
 
+window.onload=()=>{
 cargarAgencias();
 cargarVendedores();
 cargarAcciones();
+}
 </script>
 
 </body>
