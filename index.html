@@ -232,9 +232,8 @@ gap:8px;
 <script>
 const WEB_APP_URL="https://script.google.com/macros/s/AKfycbzhpio0y8ZwHZppVJ6-lWB8FjrzJUhvBlFGFwncfVC6COIROBl3dQyLxG7QFP9zKDDjVQ/exec";
 
-let acciones=[];
 let accionesOriginal=[];
-let accionSeleccionadaIndex=null;
+let accionSeleccionadaRow=null;
 
 function mostrarSeccion(id){
 document.querySelectorAll('.seccion').forEach(s=>s.style.display='none');
@@ -253,23 +252,18 @@ function cargarAcciones(){
 fetch(WEB_APP_URL+"?hoja="+encodeURIComponent("Acciones comerciales"))
 .then(r=>r.json())
 .then(data=>{
-acciones=data.map(r=>({fecha:r[0],agencia:r[1],vendedor:r[2],tipoAccion:r[3],observacion:r[4]}));
-accionesOriginal=[...acciones];
+accionesOriginal=data;
 llenarFiltros();
 mostrarAcciones(accionesOriginal);
 });
 }
 
-/* 🔧 FUNCIÓN CORREGIDA */
 function mostrarAcciones(lista){
 const tbody=document.getElementById("tablaAcciones");
 tbody.innerHTML="";
-
 lista.forEach(a=>{
-const indexReal = accionesOriginal.indexOf(a);
-
 tbody.innerHTML+=`
-<tr onclick="abrirEditarAccion(${indexReal})">
+<tr onclick="abrirEditarAccion(${a.row})">
 <td>${formatearFecha(a.fecha)}</td>
 <td>${a.agencia}</td>
 <td>${a.vendedor}</td>
@@ -279,16 +273,14 @@ tbody.innerHTML+=`
 });
 }
 
-function abrirEditarAccion(index){
-accionSeleccionadaIndex=index;
-const a=accionesOriginal[index];
-
+function abrirEditarAccion(row){
+const a=accionesOriginal.find(x=>x.row===row);
+accionSeleccionadaRow=row;
 editFecha.value=formatearFecha(a.fecha);
 editAgencia.value=a.agencia;
 editVendedor.value=a.vendedor;
 editTipo.value=a.tipoAccion;
 editObs.value=a.observacion;
-
 abrirModal("modalEditarAccion");
 }
 
@@ -297,7 +289,7 @@ fetch(WEB_APP_URL,{
 method:"POST",
 body:JSON.stringify({
 tipo:"editarAccion",
-index:accionSeleccionadaIndex,
+row:accionSeleccionadaRow,
 fecha:editFecha.value,
 agencia:editAgencia.value,
 vendedor:editVendedor.value,
