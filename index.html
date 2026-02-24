@@ -60,6 +60,38 @@ border-radius:12px;
 .filtro-item{display:flex;flex-direction:column;font-size:13px;}
 .filtro-item label{font-weight:500;margin-bottom:4px;color:#374151;}
 .filtro-botones{display:flex;gap:8px;}
+
+/* COMISIONES */
+.comisiones-grid{
+display:grid;
+grid-template-columns: repeat(3, 1fr);
+gap:15px;
+margin-top:10px;
+}
+
+.comision-card{
+background:#f8fafc;
+border-radius:10px;
+padding:12px;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.comision-card h3{
+margin-top:0;
+color:#2563eb;
+font-size:16px;
+text-align:center;
+}
+
+.comision-card ul{
+padding-left:18px;
+margin:0;
+}
+
+.comision-card li{
+font-size:13px;
+padding:3px 0;
+}
 </style>
 </head>
 
@@ -81,7 +113,7 @@ border-radius:12px;
 <button onclick="abrirModal('modalAgencias')">Agencia</button>
 <button onclick="abrirModal('modalVendedores')">Vendedor</button>
 <button onclick="abrirModal('modalAcciones')">Acción</button>
-  <button onclick="abrirModal('modalComisiones')">Comisiones</button>
+<button onclick="abrirModal('modalComisiones')">Comisiones</button>
 </div>
 </div>
 
@@ -207,24 +239,32 @@ border-radius:12px;
 </div>
 </div>
 
-  <div id="modalComisiones" class="modal">
-<div class="modal-content">
+<!-- MODAL COMISIONES -->
+<div id="modalComisiones" class="modal">
+<div class="modal-content" style="width:650px; max-width:95%;">
 <span class="modal-close" onclick="cerrarModal('modalComisiones')">&times;</span>
 
 <h2>Comisiones por Agencia</h2>
 
-<h3>💰 20% Comisión</h3>
+<div class="comisiones-grid">
+
+<div class="comision-card">
+<h3>20% Comisión</h3>
 <ul>
 <li>HK</li>
 </ul>
+</div>
 
-<h3>💰 18% Comisión</h3>
+<div class="comision-card">
+<h3>18% Comisión</h3>
 <ul>
 <li>Viajo Bien</li>
 <li>Pablo Arenas</li>
 </ul>
+</div>
 
-<h3>💰 17% Comisión</h3>
+<div class="comision-card">
+<h3>17% Comisión</h3>
 <ul>
 <li>Traveloz</li>
 <li>MTUR</li>
@@ -244,7 +284,9 @@ border-radius:12px;
 <li>HC</li>
 <li>Geotur</li>
 </ul>
+</div>
 
+</div>
 </div>
 </div>
 
